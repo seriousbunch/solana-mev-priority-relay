@@ -24,3 +24,18 @@ describe("Solana MEV Priority Relay Test Suite", () => {
     assert.strictEqual(client.verifyMinimumOutput(expected, 9850n, 100), false);
   });
 });
+import { BundleScheduler } from "../src/index";
+
+describe("Bundle Scheduler Test Suite", () => {
+  it("should schedule private bundle and respect max execution slot", () => {
+    const scheduler = new BundleScheduler();
+    scheduler.scheduleBundle({
+      bundleId: "bundle-123",
+      transactions: ["tx1", "tx2"],
+      maxSlot: 500,
+    });
+
+    assert.strictEqual(scheduler.isBundleValidForSlot("bundle-123", 450), true);
+    assert.strictEqual(scheduler.isBundleValidForSlot("bundle-123", 550), false);
+  });
+});
